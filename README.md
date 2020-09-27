@@ -73,3 +73,7 @@ No sé bien cómo funciona la API de Twitter ahora, ya que estuvieron implementa
 # Contacta
 ---
 Si tienes alguna duda, sugerencia, crítica o palabra de odio, puedes contactarme en https://twitter.com/ojoven
+
+# TODO
+
+* env-vars para configurar el container (database & Twitter)

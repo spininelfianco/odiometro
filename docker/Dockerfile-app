@@ -2,7 +2,7 @@
 FROM bitnami/express:4.17.1-debian-10-r218
 LABEL maintainer "Igor Pellegrini <igor.pellegrini@live.com>"
 
-# ENV DISABLE_WELCOME_MESSAGE=1
+ENV DISABLE_WELCOME_MESSAGE=1
 
 ENV NODE_ENV=development \
     PORT=3000

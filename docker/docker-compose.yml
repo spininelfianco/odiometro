@@ -10,8 +10,6 @@ services:
       # set default credentials
       - MARIADB_ROOT_USER=mysql_root
       - MARIADB_ROOT_PASSWORD=mysql_pass
-    volumes:
-      - ./mysql:/var/lib/mysql
     build:
       context: ../
       dockerfile: docker/Dockerfile-mariadb

@@ -7,12 +7,6 @@ LABEL maintainer "Igor Pellegrini <igor.pellegrini@live.com>"
 ENV NODE_ENV=development \
     PORT=3000
 
-# Skip fetching dependencies and database migrations for production image
-# ENV SKIP_DB_WAIT=1 \
-#     SKIP_DB_MIGRATION=1 \
-#     SKIP_NPM_INSTALL=0 \
-#     SKIP_BOWER_INSTALL=1
-
 USER root
 
 RUN apt-get update -y && apt-get install -y bzip2
@@ -21,15 +15,25 @@ RUN chown -R 1000:1000 "/.npm"
 
 USER bitnami
 
+WORKDIR /app
+
+# copy installation manifests fist (to allow caching NPM installation)
+COPY --chown=bitnami:bitnami ./package.json /app/package.json
+COPY --chown=bitnami:bitnami ./public/package.json /app/public/package.json
+RUN npm install
+RUN cd public && npm install
+
+# copy the rest of the application code
 COPY --chown=bitnami:bitnami . /app
 
-RUN ls -la /app \
-	&& whoami \
-	&& npm install
-RUN cd public && npm install
-# RUN env
-# RUN ls -la /app/public/node_modules/.bin/grunt
 # RUN ./app/public/node_modules/grunt/bin/grunt
 
+# set user to run NPM scripts
+USER root
+RUN npm config set user bitnami
+
+USER bitnami
+
 EXPOSE 3000
+
 CMD ["npm", "start"]

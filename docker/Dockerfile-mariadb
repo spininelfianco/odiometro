@@ -1,0 +1,12 @@
+## Dockerfile for building development image
+FROM bitnami/mariadb:10.3-debian-10
+LABEL maintainer "Igor Pellegrini <igor.pellegrini@live.com>"
+
+ENV NODE_ENV=development
+
+USER root
+
+# initialize project SQL files when running container (schema, migrations)
+RUN mkdir -p /usr/local/bin/docker-entrypoint-initdb.d
+COPY db /usr/local/bin/docker-entrypoint-initdb.d
+RUN chmod -R +x /usr/local/bin/docker-entrypoint-initdb.d

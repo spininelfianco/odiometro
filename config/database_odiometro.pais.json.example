@@ -1,6 +1,6 @@
 {
-	"host": "---",
-	"user": "---",
-	"password": "---",
-	"database": "---"
+	"host": "mariadb",
+	"user": "mysql_root",
+	"password": "mysql_pass",
+	"database": "odiometro"
 }

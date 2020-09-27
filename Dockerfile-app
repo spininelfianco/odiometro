@@ -1,0 +1,35 @@
+## Dockerfile for building development image
+FROM bitnami/express:4.17.1-debian-10-r218
+LABEL maintainer "Igor Pellegrini <igor.pellegrini@live.com>"
+
+# ENV DISABLE_WELCOME_MESSAGE=1
+
+ENV NODE_ENV=development \
+    PORT=3000
+
+# Skip fetching dependencies and database migrations for production image
+# ENV SKIP_DB_WAIT=1 \
+#     SKIP_DB_MIGRATION=1 \
+#     SKIP_NPM_INSTALL=0 \
+#     SKIP_BOWER_INSTALL=1
+
+USER root
+
+RUN apt-get update -y && apt-get install -y bzip2
+
+RUN chown -R 1000:1000 "/.npm"
+
+USER bitnami
+
+COPY --chown=bitnami:bitnami . /app
+
+RUN ls -la /app \
+	&& whoami \
+	&& npm install
+RUN cd public && npm install
+# RUN env
+# RUN ls -la /app/public/node_modules/.bin/grunt
+# RUN ./app/public/node_modules/grunt/bin/grunt
+
+EXPOSE 3000
+CMD ["npm", "start"]

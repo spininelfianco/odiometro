@@ -2,7 +2,7 @@
 	"language": "es",
 
 	"index": "amorometro/index",
-	"port": 8002,
+	"port": 8001,
 	"saveTweets": false,
 
 	"ignore_locations": [],

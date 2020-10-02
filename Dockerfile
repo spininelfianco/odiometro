@@ -2,6 +2,8 @@
 FROM bitnami/express:4.17.1-debian-10-r218
 LABEL maintainer "Igor Pellegrini <igor.pellegrini@live.com>"
 
+#     # bitnami/express:4-debian-10   ?
+
 ENV DISABLE_WELCOME_MESSAGE=1
 
 ENV NODE_ENV=development \

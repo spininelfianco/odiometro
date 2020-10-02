@@ -4,14 +4,18 @@ services:
   mariadb:
     tty: true
     environment:
-      - ALLOW_EMPTY_PASSWORD=yes
-      - MARIADB_DATABASE=odiometro
+      # - ALLOW_EMPTY_PASSWORD=yes
+      - MARIADB_DATABASE=${APP_BOT_NAME}
       # set default credentials
       - MARIADB_ROOT_USER=mysql_root
       - MARIADB_ROOT_PASSWORD=mysql_pass
+      # - MARIADB_USER=mysql_user
+      # - MARIADB_PASSWORD=my_password
     build:
-      context: ../
-      dockerfile: docker/Dockerfile-mariadb
+      context: .
+      dockerfile: Dockerfile-mariadb
+    volumes:
+      - ./var/mysql:/bitnami/mariadb
 
   express:
     tty: true # Enables debugging capabilities when attached to this container.
@@ -19,10 +23,11 @@ services:
       - PORT=3000
       - NODE_ENV=development
       # - APP_DATABASE_URL=mysql://mysql_root:mysql_pass@mariadb/odiometro
+      # - APP_BOT_NAME=${APP_BOT_NAME}
+      - APP_DATABASE_NAME=${APP_BOT_NAME}
+      - APP_DATABASE_HOST=mariadb
       - APP_DATABASE_USER=mysql_root
       - APP_DATABASE_PASSWORD=mysql_pass
-      - APP_DATABASE_NAME=odiometro
-      - APP_DATABASE_HOST=mariadb
       # Skip fetching dependencies and database migrations for production image
       - SKIP_DB_WAIT=0
       - SKIP_DB_MIGRATION=0
@@ -30,12 +35,10 @@ services:
       - SKIP_NPM_INSTALL=0
       - SKIP_BOWER_INSTALL=1
       - SKIP_SAMPLE_CODE=1
-    build:
-      context: ../
-      dockerfile: docker/Dockerfile-app
+    build: .
     depends_on:
       - mariadb
     ports:
       - 3000:3000
     volumes:
-      - ..:/app
+      - .:/app

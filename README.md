@@ -19,6 +19,8 @@ La web hace uso de las siguientes tecnologías:
 # Instalación
 ---
 
+TODO: Update with docker + set bot in .env or docker-compose set-env
+
 1. Clonar el repositorio
 ```git clone git@github.com:ojoven/odiometro.git```
 

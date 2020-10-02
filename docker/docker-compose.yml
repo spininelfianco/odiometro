@@ -3,7 +3,6 @@ version: '2'
 services:
   mariadb:
     tty: true
-    image: 'docker.io/bitnami/mariadb:10.3-debian-10'
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
       - MARIADB_DATABASE=odiometro
@@ -16,7 +15,6 @@ services:
 
   express:
     tty: true # Enables debugging capabilities when attached to this container.
-    image: docker.io/bitnami/express:4-debian-10
     environment:
       - PORT=3000
       - NODE_ENV=development

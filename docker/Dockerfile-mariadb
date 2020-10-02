@@ -1,5 +1,5 @@
 ## Dockerfile for building development image
-FROM bitnami/mariadb:10.3-debian-10
+FROM bitnami/mariadb:10.1-debian-10
 LABEL maintainer "Igor Pellegrini <igor.pellegrini@live.com>"
 
 ENV DISABLE_WELCOME_MESSAGE=1

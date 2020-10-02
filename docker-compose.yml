@@ -4,18 +4,18 @@ services:
   mariadb:
     tty: true
     environment:
-      # - ALLOW_EMPTY_PASSWORD=yes
-      - MARIADB_DATABASE=${APP_BOT_NAME}
+      # MARIADB_DATABASE does not support multiple databases (for creation).
+      #   Prefere creating one single DB for each bot, via the initdb into db/*.sql
+      # - MARIADB_DATABASE="do-not-set-me"
       # set default credentials
       - MARIADB_ROOT_USER=mysql_root
       - MARIADB_ROOT_PASSWORD=mysql_pass
-      # - MARIADB_USER=mysql_user
-      # - MARIADB_PASSWORD=my_password
     build:
       context: .
       dockerfile: Dockerfile-mariadb
     volumes:
       - ./var/mysql:/bitnami/mariadb
+      - ./db:/docker-entrypoint-initdb.d
 
   express:
     tty: true # Enables debugging capabilities when attached to this container.

@@ -1,3 +1,4 @@
+---
 version: '2'
 
 services:
@@ -18,7 +19,7 @@ services:
       - ./var/mysql:/bitnami/mariadb
 
   express:
-    tty: true # Enables debugging capabilities when attached to this container.
+    tty: true  # Enables debugging capabilities when attached to this container.
     environment:
       - PORT=3000
       - NODE_ENV=development
@@ -28,13 +29,7 @@ services:
       - APP_DATABASE_HOST=mariadb
       - APP_DATABASE_USER=mysql_root
       - APP_DATABASE_PASSWORD=mysql_pass
-      # Skip fetching dependencies and database migrations for production image
-      - SKIP_DB_WAIT=0
-      - SKIP_DB_MIGRATION=0
-      # enable/disable features
-      - SKIP_NPM_INSTALL=0
-      - SKIP_BOWER_INSTALL=1
-      - SKIP_SAMPLE_CODE=1
+    working_dir: /home/node/app
     build: .
     depends_on:
       - mariadb

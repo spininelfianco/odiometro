@@ -1,41 +1,43 @@
 ## Dockerfile for building development image
-FROM bitnami/express:4.17.1-debian-10-r218
+FROM node:14.12-alpine3.12
 LABEL maintainer "Igor Pellegrini <igor.pellegrini@live.com>"
 
-#     # bitnami/express:4-debian-10   ?
-
-ENV DISABLE_WELCOME_MESSAGE=1
+USER node
 
 ENV NODE_ENV=development \
     PORT=3000
 
+# Install system dependencies
+# bzip2 to install phantomjs; bash to run entrypoint
 USER root
+RUN apk update && apk add --no-cache --upgrade bash bzip2
 
-RUN apt-get update -y && apt-get install -y bzip2
+WORKDIR /home/node/app
+RUN chown node:node -R /home/node/app
 
-RUN chown -R 1000:1000 "/.npm"
-
-USER bitnami
-
-WORKDIR /app
+# Install application
+USER node
 
 # copy installation manifests fist (to allow caching NPM installation)
-COPY --chown=bitnami:bitnami ./package.json /app/package.json
-COPY --chown=bitnami:bitnami ./public/package.json /app/public/package.json
+COPY --chown=node:node ./package.json /home/node/app/package.json
+COPY --chown=node:node ./public/package.json /home/node/app/public/package.json
 RUN npm install
 RUN cd public && npm install
 
 # copy the rest of the application code
-COPY --chown=bitnami:bitnami . /app
+COPY --chown=node:node . /home/node/app
 
-# RUN ./app/public/node_modules/grunt/bin/grunt
+RUN chmod +x entrypoint.sh
+
+# RUN ./home/node/app/public/node_modules/grunt/bin/grunt
 
 # set user to run NPM scripts
-USER root
-RUN npm config set user bitnami
+# USER root
+# RUN npm config set user node
 
-USER bitnami
+# USER node
 
 EXPOSE 3000
 
-CMD ["npm", "start"]
+ENTRYPOINT ["/home/node/app/entrypoint.sh"]
+CMD ["/home/node/app/entrypoint.sh", "npm", "start"]

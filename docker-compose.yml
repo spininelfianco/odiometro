@@ -10,13 +10,13 @@ services:
       # set default credentials
       - MARIADB_ROOT_USER=mysql_root
       - MARIADB_ROOT_PASSWORD=mysql_pass
-      # - MARIADB_USER=mysql_user
-      # - MARIADB_PASSWORD=my_password
     build:
       context: .
       dockerfile: Dockerfile-mariadb
     volumes:
       - ./var/mysql:/bitnami/mariadb
+      # Bitnami image supports docker-entrypoint-initdb.d/ to load .sql or .sh,
+      # but it needs to be mounted as volume before the build starts
       - .db:/docker-entrypoint-initdb.d
 
   express:

@@ -17,6 +17,7 @@ services:
       dockerfile: Dockerfile-mariadb
     volumes:
       - ./var/mysql:/bitnami/mariadb
+      - .db:/docker-entrypoint-initdb.d
 
   express:
     tty: true  # Enables debugging capabilities when attached to this container.

@@ -6,18 +6,24 @@ services:
     tty: true
     environment:
       # - ALLOW_EMPTY_PASSWORD=yes
-      - MARIADB_DATABASE=${APP_BOT_NAME}
+      # - MYSQL_DATABASE=${APP_BOT_NAME}
       # set default credentials
-      - MARIADB_ROOT_USER=mysql_root
-      - MARIADB_ROOT_PASSWORD=mysql_pass
+      # - MYSQL_ROOT_USER=mysql_root
+      # - MYSQL_ROOT_PASSWORD=mysql_pass
+      - MYSQL_ROOT_USER="mysql_root"
+      - MYSQL_ROOT_PASSWORD="mysql_pass"
+      - INIT_DB_NAMES="odiometro,amorometro"
     build:
       context: .
       dockerfile: Dockerfile-mariadb
     volumes:
-      - ./var/mysql:/bitnami/mariadb
       # Bitnami image supports docker-entrypoint-initdb.d/ to load .sql or .sh,
       # but it needs to be mounted as volume before the build starts
-      - .db:/docker-entrypoint-initdb.d
+      # - ./db:/docker-entrypoint-initdb.d
+      # Backup databases to host machine
+      # - ./var/mysql:/bitnami/mariadb
+      # Cache apt-get (for debug purposes)
+      - ./var/apt/cache:/var/cache/apt/archives
 
   express:
     tty: true  # Enables debugging capabilities when attached to this container.

@@ -3,11 +3,59 @@
 # TODO:
 # - use alpine mariadb; drop bitnami (implement own `waitDb`, `initDb` scripts)
 # - init db manually, without needing to mount volume from docker-compose
-FROM bitnami/mariadb:10.1-debian-10
+# FROM bitnami/mariadb:10.1-debian-10
+FROM mariadb:10.1-bionic
 LABEL maintainer "Igor Pellegrini <igor.pellegrini@live.com>"
 
 ENV DISABLE_WELCOME_MESSAGE=1
-ENV NODE_ENV=development
 # ENV ALLOW_EMPTY_PASSWORD=0 # on production env
 
+ENV MYSQL_ROOT_USER="mysql_root"
+ENV MYSQL_ROOT_PASSWORD="mysql_pass"
+ENV MARIADB_ROOT_USER=$MYSQL_ROOT_USER
+ENV MARIADB_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
+ENV INIT_DB_NAMES="odiometro,amorometro"
+
+# RUN whoami
+
+# RUN ls -la /var/log/mysql
+
+# RUN ps -ef | grep mysql
+
 USER root
+
+# RUN groupadd -r mysql && useradd -r -g mysql mysql
+
+RUN mkdir -p /var/lib/apt/lists/partial && apt-get update && apt-get install -y netcat
+# RUN apk update && apk add --no-cache --upgrade netcat
+
+RUN cat /etc/passwd
+
+USER 1001
+
+COPY --chown=1001 ./entrypoint-mariadb.sh /entrypoint-mariadb.sh
+COPY --chown=1001 ./init_from_DBNAMES.sh /scripts/init_from_DBNAMES.sh
+COPY --chown=1001 ./db/app-schema.sql /schemas/app-schema.sql
+
+
+RUN ls -la /scripts
+# RUN ls -la /usr/bin/
+# RUN ls -la /var/run/mysqld
+RUN ls -la /docker-entrypoint-initdb.d
+# RUN /docker-entrypoint-initdb.d/init_from_DBNAMES.sh
+
+# USER root
+# USER bitnami
+
+RUN ls -la /opt/bitnami/mariadb/data/
+
+# RUN ls -la /docker-entrypoint-initdb.d
+
+# # initialize project SQL files when running container (schema, migrations)
+# # bitnami image supports docker-entrypoint-initdb.d/ to load *.sql, but it needs
+# # to be mounted as volume before the build starts (see `docker-compose.yml`)
+# COPY --chown=1001 db /docker-entrypoint-initdb.d
+# RUN chmod -R +x /docker-entrypoint-initdb.d
+
+
+CMD mysqld && /entrypoint-mariadb.sh

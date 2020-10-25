@@ -2,30 +2,38 @@
 version: '2'
 
 services:
-  mariadb:
-    tty: true
+  database:
+    # tty: true
     environment:
       # - ALLOW_EMPTY_PASSWORD=yes
       # - MYSQL_DATABASE=${APP_BOT_NAME}
       # set default credentials
       # - MYSQL_ROOT_USER=mysql_root
       # - MYSQL_ROOT_PASSWORD=mysql_pass
-      - MYSQL_ROOT_USER="mysql_root"
-      - MYSQL_ROOT_PASSWORD="mysql_pass"
-      - INIT_DB_NAMES="odiometro,amorometro"
+      # - MYSQL_ROOT_USER="mysql_root"
+      - MYSQL_ROOT_PASSWORD=mysql_pass
+      - INIT_DB_NAMES=odiometro,amorometro
     build:
       context: .
-      dockerfile: Dockerfile-mariadb
+      dockerfile: Dockerfile-database
     volumes:
       # Bitnami image supports docker-entrypoint-initdb.d/ to load .sql or .sh,
       # but it needs to be mounted as volume before the build starts
       # - ./db:/docker-entrypoint-initdb.d
       # Backup databases to host machine
       # - ./var/mysql:/bitnami/mariadb
+      # - /var/mysql:/var/lib/mysql
       # Cache apt-get (for debug purposes)
       - ./var/apt/cache:/var/cache/apt/archives
 
-  express:
+      # - ./entrypoint-mariadb.sh:/entrypoint-mariadb.sh
+      - ./init_from_DBNAMES.sh:/scripts/init_from_DBNAMES.sh
+      - ./db/app-schema.sql:/schemas/app-schema.sql
+      - ./init_from_DBNAMES.sh:/docker-entrypoint-initdb.d/init_from_DBNAMES.sh
+
+      # - ./entrypoint-mysql.sh:/usr/local/bin/docker-entrypoint.sh
+
+  app:
     tty: true  # Enables debugging capabilities when attached to this container.
     environment:
       - PORT=3000
@@ -33,14 +41,14 @@ services:
       # - APP_DATABASE_URL=mysql://mysql_root:mysql_pass@mariadb/odiometro
       # - APP_BOT_NAME=${APP_BOT_NAME}
       - APP_DATABASE_NAME=${APP_BOT_NAME}
-      - APP_DATABASE_HOST=mariadb
+      - APP_DATABASE_HOST=database
       - APP_DATABASE_USER=mysql_root
       - APP_DATABASE_PASSWORD=mysql_pass
     working_dir: /home/node/app
     build: .
     depends_on:
-      - mariadb
+      - database
     ports:
       - 3000:3000
     volumes:
-      - .:/app
+      - ./:/app

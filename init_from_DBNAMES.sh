@@ -37,18 +37,36 @@ wait_for_db() {
 
 # exit 1;
 
-wait_for_db "127.0.0.1" "3306"
+wait_for_db "127.0.0.1" "3306" 5
 
-# printf "MySQL database service reachable\n"
+printf "Initialize custom databases..\n"
+
+# mysql -uroot -p$MYSQL_ROOT_PASSWORD
+# mysql -e '\q'
+# mysql -u root -e '\q'
+# mysql -uroot -p$MYSQL_ROOT_PASSWORD -e '\q' >&2
+# mysql -u mrtamburino -e '\q'"
+echo '========================================================================================'
+echo '========================================================================================'
+echo '========================================================================================'
+echo '========================================================================================'
+# echo "mysql -uroot -p$MYSQL_ROOT_PASSWORD mysql \"SHOW DATABASES\""
+# mysql -uroot -p$MYSQL_ROOT_PASSWORD 'mysql' -e 'SHOW DATABASES'
 
 
+# exec /usr/local/bin/docker-entrypoint.sh
 
-db_names=("${INIT_DB_NAMES//,/ }")
+# db_names=("${INIT_DB_NAMES//,/ }")
+IFS=',' read -ra db_names <<< "${INIT_DB_NAMES}"
 
-for db_name in "$db_names[@]"; do
+for db_name in "${db_names[@]}"
+do
     printf "Create database $db_name\n"
-    mysql -u"$MYSQL_ROOT_USER" -p"$MYSQL_ROOT_PASSWORD" "mysql" "CREATE DATABASE \`$db_name\` IF NOT EXISTS"
-    mysql -u"$MYSQL_ROOT_USER" -p"$MYSQL_ROOT_PASSWORD" "$db_name" < /schemas/app-schema.sql
+    echo "mysql -uroot -p$MYSQL_ROOT_PASSWORD 'mysql' -e \"CREATE DATABASE $db_name\""
+    mysql -uroot -p$MYSQL_ROOT_PASSWORD 'mysql' -e "CREATE DATABASE $db_name"
+    mysql -uroot -p$MYSQL_ROOT_PASSWORD 'mysql' -e 'SHOW DATABASES'
+    echo "Apply schema to database \`$db_name\`"
+    mysql -uroot -p$MYSQL_ROOT_PASSWORD "$db_name" < /schemas/app-schema.sql
 done
 
 # Add convention:

@@ -20,7 +20,7 @@ SET time_zone = "+00:00";
 -- Base de datos: `amorometro`
 --
 
-CREATE DATABASE IF NOT EXISTS `amorometro` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
+-- CREATE DATABASE IF NOT EXISTS `amorometro` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
 
 -- --------------------------------------------------------
 

@@ -1,8 +1,10 @@
 #!/bin/bash
 
-printf '-------------------------------------------------------'
+echo '-------------------------------------------------------'
 
-service --help
+service mysql restart
+#mysqld
+# service --help
 
 exec /scripts/init_from_DBNAMES.sh
 

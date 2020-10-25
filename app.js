@@ -108,7 +108,6 @@ twitterStream.on('tweet', function (tweet) {
 			database.saveRetweet(tweet);
 			//if (global.botConfig.saveTweets) database.saveRetweetStore(tweet);
 		} else {
-
 			// Or it is a tweet
 			tweet.information = information;
 			database.saveTweet(tweet);

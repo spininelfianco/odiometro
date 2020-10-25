@@ -1,88 +1,23 @@
 ## Dockerfile for building development image
-#
-# TODO:
-# - use alpine mariadb; drop bitnami (implement own `waitDb`, `initDb` scripts)
-# - init db manually, without needing to mount volume from docker-compose
-# FROM bitnami/mariadb:10.1-debian-10
 FROM mysql:5.6
 LABEL maintainer "Igor Pellegrini <igor.pellegrini@live.com>"
 
-# ENV DISABLE_WELCOME_MESSAGE=1
-# ENV ALLOW_EMPTY_PASSWORD=0 # on production env
-
-# ENV MYSQL_ROOT_USER="root"
-ENV MYSQL_ROOT_PASSWORD=mysql_pass
-# ENV MARIADB_ROOT_USER=$MYSQL_ROOT_USER
-ENV MARIADB_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
-ENV INIT_DB_NAMES=odiometro,amorometro
-
-# RUN whoami
-
-# RUN ls -la /var/log/mysql
-
-# RUN ps -ef | grep mysql
+ENV DISABLE_WELCOME_MESSAGE=1
 
 USER root
 
-# RUN groupadd -r mysql && useradd -r -g mysql mysql
-
-RUN  mkdir -p /var/lib/apt/lists/partial \
-    && apt-get -q update \
+RUN apt-get -q update \
     && apt-get -q --yes install netcat  \
     && apt-get clean
-# RUN apk update && apk add --no-cache --upgrade netcat
-
-USER mysql
-
-RUN cat /etc/passwd
-
-# RUN ls -la /var/lib/mysql && \
-#     # chown -R mysql.mysql /var/lib/mysql && \
-#     # chmod -R 775 /var/lib/mysql && \
-#     mysqld --initialize --user=mysql --basedir=/usr --datadir=/var/lib/mysql --explicit_defaults_for_timestamp && \
-#     ls -la /var/lib/mysql
-
-
-# RUN rm -f /var/lib/mysqld/ib_logfile0
-# RUN rm -f /var/lib/mysql/ib_logfile1
-# RUN rm -f /var/lib/mysql/aria_log_control
 
 RUN chown -R mysql:mysql /var/lib/mysql
 
-
-
-
-
-USER 1000
-
-# RUN cd '/usr' ; /usr/bin/mysqld_safe --user=root --datadir='/var/lib/mysql'
-# RUN cd '/usr' ; /usr/bin/mysqld_safe --user=mysql --datadir='/var/lib/mysql' --initialize
-
 COPY --chown=mysql:mysql ./db/app-schema.sql /schemas/app-schema.sql
-COPY --chown=mysql:mysql ./init_from_DBNAMES.sh /docker-entrypoint-initdb.d/init_from_DBNAMES.sh
+COPY --chown=mysql:mysql ./docker/bash_functions.sh /scripts/bash_functions.sh
+# initialize project SQL files when running container (schema, migrations)
+# MySql image supports docker-entrypoint-initdb.d/ to load *.sql
+COPY --chown=mysql:mysql ./docker/init-from-DB_NAMES.sh /docker-entrypoint-initdb.d/init-from-DB_NAMES.sh
 
+USER mysql
 
-# RUN ls -la /scripts
-# RUN ls -la /usr/bin/
-# RUN ls -la /var/run/mysqld
-ENV test=a
-RUN ls -la /docker-entrypoint-initdb.d
-# RUN /docker-entrypoint-initdb.d/init_from_DBNAMES.sh
-
-# USER root
-# USER bitnami
-
-# RUN ls -la /docker-entrypoint-initdb.d
-
-# # initialize project SQL files when running container (schema, migrations)
-# # bitnami image supports docker-entrypoint-initdb.d/ to load *.sql, but it needs
-# # to be mounted as volume before the build starts (see `docker-compose.yml`)
-# COPY --chown=mysql db /docker-entrypoint-initdb.d
-# RUN chmod -R +x /docker-entrypoint-initdb.d
-
-# USER root
-
-#         ###>>>>
-#             # ERROR] Could not open mysql.plugin table. Some plugins may be not loaded
-
-# CMD ["--user=root","--explicit_defaults_for_timestamp"]    # && /entrypoint-mariadb.sh
+# CMD ["--user=root","--explicit_defaults_for_timestamp"]

@@ -15,6 +15,11 @@ RUN apk update && apk add --no-cache --upgrade bash bzip2
 WORKDIR /home/node/app
 RUN chown node:node -R /home/node/app
 
+COPY --chown=node:node ./docker/bash_functions.sh /scripts/bash_functions.sh
+COPY --chown=node:node ./docker/entrypoint.sh /home/node/app/entrypoint.sh
+# set user to run NPM scripts
+# RUN npm config set user node
+
 # Install application
 USER node
 
@@ -27,15 +32,7 @@ RUN cd public && npm install
 # copy the rest of the application code
 COPY --chown=node:node . /home/node/app
 
-RUN chmod +x entrypoint.sh
-
 # RUN ./home/node/app/public/node_modules/grunt/bin/grunt
-
-# set user to run NPM scripts
-# USER root
-# RUN npm config set user node
-
-# USER node
 
 EXPOSE 3000
 

@@ -17,10 +17,10 @@ var database = {
 		// fallback chain for the database config
 		//	- prefer environment variables, when running on docker (see docker-compose.yml)
 		//  - precedence is given to local config file, if present under config/ folder
-		host: process.env.APP_DATABASE_HOST || dbConfig.host || 'database',
+		host: process.env.APP_DATABASE_HOST || dbConfig.host,
 		user: process.env.APP_DATABASE_USER || dbConfig.user,
 		password: process.env.APP_DATABASE_PASSWORD || dbConfig.password,
-		database: process.env.APP_DATABASE_DATABASE || dbConfig.database || 'odiometro',
+		database: process.env.APP_DATABASE_NAME || dbConfig.database || 'odiometro',
 		charset: process.env.APP_DATABASE_CONNECTION_CHARSET || dbConfig.charset || 'utf8mb4'
 	})
 };

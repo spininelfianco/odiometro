@@ -5,13 +5,12 @@ services:
   database:
     # tty: true
     environment:
-      # - ALLOW_EMPTY_PASSWORD=yes
-      # - MYSQL_DATABASE=${APP_BOT_NAME}
       # set default credentials
-      # - MYSQL_ROOT_USER=mysql_root
-      # - MYSQL_ROOT_PASSWORD=mysql_pass
-      # - MYSQL_ROOT_USER="mysql_root"
+      # - ALLOW_EMPTY_PASSWORD=yes
+      # - MYSQL_ROOT_USER=root
       - MYSQL_ROOT_PASSWORD=mysql_pass
+      # specify the names of the databases to create
+      #  (corresponding to the app bot-names)
       - INIT_DB_NAMES=odiometro,amorometro
     build:
       context: .
@@ -20,29 +19,27 @@ services:
       # Bitnami image supports docker-entrypoint-initdb.d/ to load .sql or .sh,
       # but it needs to be mounted as volume before the build starts
       # - ./db:/docker-entrypoint-initdb.d
+      # - ./init_from_DBNAMES.sh:/docker-entrypoint-initdb.d/init_from_DBNAMES.sh
       # Backup databases to host machine
-      # - ./var/mysql:/bitnami/mariadb
-      # - /var/mysql:/var/lib/mysql
+      - ./var/mysql:/var/lib/mysql
       # Cache apt-get (for debug purposes)
-      - ./var/apt/cache:/var/cache/apt/archives
+      # - ./var/apt/cache:/var/cache/apt/archives
 
-      # - ./entrypoint-mariadb.sh:/entrypoint-mariadb.sh
-      - ./init_from_DBNAMES.sh:/scripts/init_from_DBNAMES.sh
-      - ./db/app-schema.sql:/schemas/app-schema.sql
-      - ./init_from_DBNAMES.sh:/docker-entrypoint-initdb.d/init_from_DBNAMES.sh
+      # - ./init_from_DBNAMES.sh:/scripts/init_from_DBNAMES.sh
+      # - ./db/app-schema.sql:/schemas/app-schema.sql
 
       # - ./entrypoint-mysql.sh:/usr/local/bin/docker-entrypoint.sh
 
-  app:
+  odiometro:
     tty: true  # Enables debugging capabilities when attached to this container.
     environment:
       - PORT=3000
       - NODE_ENV=development
-      # - APP_DATABASE_URL=mysql://mysql_root:mysql_pass@mariadb/odiometro
-      # - APP_BOT_NAME=${APP_BOT_NAME}
+      # - APP_DATABASE_URL=mysql://root:mysql_pass@mariadb/odiometro
+      - APP_BOT_NAME=odiometro
       - APP_DATABASE_NAME=${APP_BOT_NAME}
       - APP_DATABASE_HOST=database
-      - APP_DATABASE_USER=mysql_root
+      - APP_DATABASE_USER=root
       - APP_DATABASE_PASSWORD=mysql_pass
     working_dir: /home/node/app
     build: .
@@ -50,5 +47,25 @@ services:
       - database
     ports:
       - 3000:3000
+    volumes:
+      - ./:/app
+
+  amorometro:
+    tty: true  # Enables debugging capabilities when attached to this container.
+    environment:
+      - PORT=3000
+      - NODE_ENV=development
+      # - APP_DATABASE_URL=mysql://root:mysql_pass@mariadb/odiometro
+      - APP_BOT_NAME=amorometro
+      - APP_DATABASE_NAME=${APP_BOT_NAME}
+      - APP_DATABASE_HOST=database
+      - APP_DATABASE_USER=root
+      - APP_DATABASE_PASSWORD=mysql_pass
+    working_dir: /home/node/app
+    build: .
+    depends_on:
+      - database
+    ports:
+      - 3001:3000
     volumes:
       - ./:/app

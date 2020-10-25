@@ -39,6 +39,7 @@ wait_for_db() {
 
 wait_for_db "127.0.0.1" "3306" 5
 
+echo '========================================================================================'
 printf "Initialize custom databases..\n"
 
 # mysql -uroot -p$MYSQL_ROOT_PASSWORD
@@ -46,10 +47,6 @@ printf "Initialize custom databases..\n"
 # mysql -u root -e '\q'
 # mysql -uroot -p$MYSQL_ROOT_PASSWORD -e '\q' >&2
 # mysql -u mrtamburino -e '\q'"
-echo '========================================================================================'
-echo '========================================================================================'
-echo '========================================================================================'
-echo '========================================================================================'
 # echo "mysql -uroot -p$MYSQL_ROOT_PASSWORD mysql \"SHOW DATABASES\""
 # mysql -uroot -p$MYSQL_ROOT_PASSWORD 'mysql' -e 'SHOW DATABASES'
 
@@ -64,12 +61,18 @@ do
     printf "Create database $db_name\n"
     echo "mysql -uroot -p$MYSQL_ROOT_PASSWORD 'mysql' -e \"CREATE DATABASE $db_name\""
     mysql -uroot -p$MYSQL_ROOT_PASSWORD 'mysql' -e "CREATE DATABASE $db_name"
-    mysql -uroot -p$MYSQL_ROOT_PASSWORD 'mysql' -e 'SHOW DATABASES'
     echo "Apply schema to database \`$db_name\`"
     mysql -uroot -p$MYSQL_ROOT_PASSWORD "$db_name" < /schemas/app-schema.sql
 done
+
+echo '-----'
+mysql -uroot -p$MYSQL_ROOT_PASSWORD 'mysql' -e 'SHOW DATABASES'
+echo '-----'
+mysql -uroot -p$MYSQL_ROOT_PASSWORD 'mysql' -e 'select * from mysql.user'
 
 # Add convention:
 #   - "DB_NAME.sql" for initDB files.
 #   - 'IF NOT EXISTS' sql needs to be used in the script
 #   - define desired databases as INIT_DB_NAMES="odiometro,amoreometro,.."
+
+echo '========================================================================================'

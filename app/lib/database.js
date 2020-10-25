@@ -14,17 +14,18 @@ var tweetsToStore = [];
 var database = {
 	pool: mysql.createPool({
 		connectionLimit : 15,
-		host: dbConfig.host,
-		user: dbConfig.user,
-		password: dbConfig.password,
-		database: dbConfig.database,
+		// fallback chain for the database config
+		//	- prefer environment variables, when running on docker (see docker-compose.yml)
+		//  - precedence is given to local config file, if present under config/ folder
+		host: process.env.APP_DATABASE_HOST || dbConfig.host || 'database',
+		user: process.env.APP_DATABASE_USER || dbConfig.user,
+		password: process.env.APP_DATABASE_PASSWORD || dbConfig.password,
+		database: process.env.APP_DATABASE_DATABASE || dbConfig.database || 'odiometro',
 		charset: process.env.APP_DATABASE_CONNECTION_CHARSET || dbConfig.charset || 'utf8mb4'
 	})
 };
 
 database.initialize = function () {
-
-	// this.pool.connect();
 };
 
 /** TWEETS **/

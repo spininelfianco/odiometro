@@ -15,22 +15,22 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile-database
-    # volumes:
+    volumes:
       # MySql image supports docker-entrypoint-initdb.d/ to load .sql or .sh,
       # - ./init-from-DB_NAMES.sh:/docker-entrypoint-initdb.d/init-from-DB_NAMES.sh
       # Cache apt-get (for debug purposes)
       # - ./var/apt/cache:/var/cache/apt/archives
       # Backup databases to host machine
       #  (remember: init script runs just when /var/lib/mysql is empty)
-      # - ./var/mysql:/var/lib/mysql
+      - ./var/mysql:/var/lib/mysql
 
   odiometro:
     tty: true  # Enables debugging capabilities when attached to this container.
     environment:
-      - PORT=3000
+      - PORT=3001
       - NODE_ENV=development
       - APP_BOT_NAME=odiometro
-      # - APP_URL=http://localhost:3000
+      # - APP_URL=http://localhost:8081
       # - APP_DATABASE_URL=mysql://root:mysql_pass@database/odiometro
       - APP_DATABASE_HOST=database
       - APP_DATABASE_NAME=odiometro
@@ -41,17 +41,17 @@ services:
     depends_on:
       - database
     ports:
-      - 3000:3000
+      - 8081:3001
     volumes:
       - ./:/app
 
   amorometro:
     tty: true  # Enables debugging capabilities when attached to this container.
     environment:
-      - PORT=3001
+      - PORT=3002
       - NODE_ENV=development
       - APP_BOT_NAME=amorometro
-      # - APP_URL=http://localhost:3001
+      # - APP_URL=http://localhost:8082
       # - APP_DATABASE_URL=mysql://root:mysql_pass@database/amorometro
       - APP_DATABASE_HOST=database
       - APP_DATABASE_NAME=amorometro
@@ -62,6 +62,6 @@ services:
     depends_on:
       - database
     ports:
-      - 3001:3000
+      - 8082:3002
     volumes:
       - ./:/app

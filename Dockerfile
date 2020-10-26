@@ -5,7 +5,7 @@ LABEL maintainer "Igor Pellegrini <igor.pellegrini@live.com>"
 USER node
 
 ENV NODE_ENV=development \
-    PORT=3000
+    PORT=$PORT
 
 # Install system dependencies
 # bzip2 to install phantomjs; bash to run entrypoint
@@ -34,7 +34,7 @@ COPY --chown=node:node . /home/node/app
 
 # RUN ./home/node/app/public/node_modules/grunt/bin/grunt
 
-EXPOSE 3000
+EXPOSE $PORT
 
 ENTRYPOINT ["/home/node/app/entrypoint.sh"]
 CMD ["/home/node/app/entrypoint.sh", "npm", "start"]

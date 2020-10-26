@@ -1,5 +1,5 @@
 ## Dockerfile for building development image
-FROM mysql:5.6
+FROM mariadb:10.3-focal
 LABEL maintainer "Igor Pellegrini <igor.pellegrini@live.com>"
 
 ENV DISABLE_WELCOME_MESSAGE=1

@@ -21,7 +21,8 @@ services:
       # Cache apt-get (for debug purposes)
       # - ./var/apt/cache:/var/cache/apt/archives
       # Backup databases to host machine
-      #  (remember: init script runs just when /var/lib/mysql is empty)
+      #  (remember: init script runs just when /var/lib/mysql is empty;
+      #   try to delete the folder, if incurring in problems)
       - ./var/mysql:/var/lib/mysql
 
   odiometro:

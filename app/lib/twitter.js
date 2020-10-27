@@ -2,7 +2,8 @@
 // Twitter streaming
 var twitterConfig = require(global.appRoot + '/config/twitter_' + global.botName + '.json');
 var fs = require('fs');
-
+console.log('process.env', process.env);
+console.log('process.env', twitterConfig);
 var Twit = require('twit');
 var twitterObject = new Twit({
 	consumer_key: twitterConfig.consumer_key,

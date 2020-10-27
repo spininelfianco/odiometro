@@ -130,23 +130,27 @@ indent() {
 wait_for_db() {
   if ! [[ -n $SKIP_DB_WAIT && $SKIP_DB_WAIT -gt 0 ]]
   then
-    local host=${1:-'localhost'}
-    local port=${2:-'3306'}
+    local max_count=${1:-10}
+    local probe=${2:-"/usr/bin/mysql -h $host -uroot -p$MYSQL_ROOT_PASSWORD -e \"SELECT 1\""}
+    local host=${3:-'localhost'}
+    local port=${4:-'3306'}
     local ip_address
     ip_address=$(getent ahosts "$host" | grep STREAM | head -n 1 | cut -d ' ' -f 1)
 
     info "Connecting to $host server at $ip_address:$port.\n"
 
-    max_count=${3:-10}
     counter=0
-    until nc -z "$host" "$port"; do
+    until $("${probe}")
+    # until nc -z "$host" "$port"; do
+    do
       counter=$((counter+1))
       if [ $counter == $max_count ]; then
         error "Couldn't connect to $host server.\n"
         return 1;
       fi
       info "Trying to connect to $host server at $ip_address:$port. Attempt $counter.\n"
-      sleep 5
+      sleep 3
+      info $(nc -z "$host" "$port")
     done
     info "Connected to $host server."
   fi

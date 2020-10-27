@@ -9,7 +9,7 @@ source /scripts/bash_functions.sh
 # mysql -uroot -p$MYSQL_ROOT_PASSWORD -e '\q'
 # mysql -uroot -p$MYSQL_ROOT_PASSWORD 'mysql' -e 'SHOW DATABASES'
 # mysql -uroot -p$MYSQL_ROOT_PASSWORD 'mysql' -e 'select * from mysql.user'
-# wait_for_db "127.0.0.1" "3306" 5
+wait_for_db 5
 
 printf '========================================================================================\n'
 info 'Initialize custom databases..'

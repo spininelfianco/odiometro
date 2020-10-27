@@ -38,6 +38,10 @@ services:
       - APP_DATABASE_NAME=odiometro
       - APP_DATABASE_USER=root
       - APP_DATABASE_PASSWORD=mysql_pass
+      - APP_TWITTER_CONSUMER_KEY=7hkOvo1t2AF5KKcivEzkEgILo
+      - APP_TWITTER_CONSUMER_SECRET=R0AsO8lZdgotLzENvQSapGhRbpbQAKiRyI54h19cBhWaujU3k4
+      - APP_TWITTER_ACCESS_TOKEN=1074743205747400704-ufUdAMj6p6HKEQn95Bw2qHkCQXFvoJ
+      - APP_TWITTER_ACCESS_TOKEN_SECRET=UjMdEA8fuEibbUMhi0lNegA6Qz466xxypB8gXYgGt0mz
     working_dir: /home/node/app
     build: .
     depends_on:
@@ -63,6 +67,10 @@ services:
       - APP_DATABASE_NAME=amorometro
       - APP_DATABASE_USER=root
       - APP_DATABASE_PASSWORD=mysql_pass
+      - APP_TWITTER_CONSUMER_KEY=7hkOvo1t2AF5KKcivEzkEgILo
+      - APP_TWITTER_CONSUMER_SECRET=R0AsO8lZdgotLzENvQSapGhRbpbQAKiRyI54h19cBhWaujU3k4
+      - APP_TWITTER_ACCESS_TOKEN=1074743205747400704-ufUdAMj6p6HKEQn95Bw2qHkCQXFvoJ
+      - APP_TWITTER_ACCESS_TOKEN_SECRET=UjMdEA8fuEibbUMhi0lNegA6Qz466xxypB8gXYgGt0mz
     working_dir: /home/node/app
     build: .
     depends_on:

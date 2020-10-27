@@ -1,0 +1,6 @@
+{
+    "host": "database",
+    "user": "root",
+    "password": "mysql_pass",
+    "database": "odiometro"
+}

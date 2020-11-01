@@ -130,8 +130,10 @@ indent() {
 wait_for_db() {
   if ! [[ -n $SKIP_DB_WAIT && $SKIP_DB_WAIT -gt 0 ]]
   then
+    echo $PATH
+    ls -la /usr/bin
     local max_count=${1:-10}
-    local probe=${2:-"/usr/bin/mysql -h $host -uroot -p$MYSQL_ROOT_PASSWORD -e \"SELECT 1\""}
+    local probe="nc -z ${APP_DATABASE_HOST} 3306"
     local host=${3:-'localhost'}
     local port=${4:-'3306'}
     local ip_address
@@ -140,7 +142,7 @@ wait_for_db() {
     info "Connecting to $host server at $ip_address:$port.\n"
 
     counter=0
-    until $("${probe}")
+    until "${probe}"
     # until nc -z "$host" "$port"; do
     do
       counter=$((counter+1))
@@ -150,7 +152,9 @@ wait_for_db() {
       fi
       info "Trying to connect to $host server at $ip_address:$port. Attempt $counter.\n"
       sleep 3
-      info $(nc -z "$host" "$port")
+
+      $probe
+      info "----> $?"
     done
     info "Connected to $host server."
   fi

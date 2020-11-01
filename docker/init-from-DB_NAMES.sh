@@ -1,5 +1,5 @@
 #!/bin/bash
-source /scripts/bash_functions.sh
+. /scripts/bash_functions.sh
 
 # To execute on MariaDB
 
@@ -7,6 +7,7 @@ source /scripts/bash_functions.sh
 # service mysql status
 # mysqladmin -u"$MYSQL_ROOT_USER" ping
 # mysql -uroot -p$MYSQL_ROOT_PASSWORD -e '\q'
+# mysql -uroot -p$MYSQL_ROOT_PASSWORD -h $host -e "SELECT 1"
 # mysql -uroot -p$MYSQL_ROOT_PASSWORD 'mysql' -e 'SHOW DATABASES'
 # mysql -uroot -p$MYSQL_ROOT_PASSWORD 'mysql' -e 'select * from mysql.user'
 wait_for_db 5

@@ -40,6 +40,11 @@ services:
       - APP_DATABASE_NAME=odiometro
       - APP_DATABASE_USER=root
       - APP_DATABASE_PASSWORD=mysql_pass
+      # Forward secrets from the host machine (or fallback to config/twitter_*.json files)
+      - TWITTER_CONSUMER_KEY=${TWITTER_CONSUMER_KEY}
+      - TWITTER_CONSUMER_SECRET=${TWITTER_CONSUMER_SECRET}
+      - TWITTER_ACCESS_TOKEN=${TWITTER_ACCESS_TOKEN}
+      - TWITTER_ACCESS_TOKEN_SECRET=${TWITTER_ACCESS_TOKEN_SECRET}
     working_dir: /home/node/app
     build: .
     depends_on:
@@ -67,6 +72,12 @@ services:
       - APP_DATABASE_NAME=amorometro
       - APP_DATABASE_USER=root
       - APP_DATABASE_PASSWORD=mysql_pass
+      # Forward secrets from the host machine (or fallback to config/twitter_*.json files)
+      - TWITTER_CONSUMER_KEY=${TWITTER_CONSUMER_KEY}
+      - TWITTER_CONSUMER_SECRET=${TWITTER_CONSUMER_SECRET}
+      - TWITTER_ACCESS_TOKEN=${TWITTER_ACCESS_TOKEN}
+      - TWITTER_ACCESS_TOKEN_SECRET=${TWITTER_ACCESS_TOKEN_SECRET}
+
     working_dir: /home/node/app
     build: .
     depends_on:

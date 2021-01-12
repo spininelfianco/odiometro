@@ -4,6 +4,7 @@ version: '2'
 services:
   database:
     tty: true
+    restart: always
     environment:
       ### Specify the names of the databases to create
       #  (corresponding to the app bot-names)
@@ -27,6 +28,7 @@ services:
 
   odiometro:
     tty: true  # Enables debugging capabilities when attached to this container.
+    restart: always
     environment:
       - PORT=8001
       - EXTERNAL_PORT=8081
@@ -45,13 +47,14 @@ services:
     ports:
       - 8081:8001   # external:docker
     volumes:
-      - ./:/home/node/app
+      #- ./:/home/node/app
       - /home/node/app/node_modules   # DO NOT remove: maintains a volume for node_modules/ dir,
                                       # even when mounting over it (from host to /home/node/app dir)
                                       # (otherwise is overridden and fails with MODULE_NOT_FOUND)
 
   amorometro:
     tty: true  # Enables debugging capabilities when attached to this container.
+    restart: always
     environment:
       - PORT=8002
       - EXTERNAL_PORT=8082

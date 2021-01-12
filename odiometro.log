@@ -1,0 +1,148 @@
+Creating network "odiometro_default" with the default driver
+Building database
+Step 1/9 : FROM mariadb:10.4-focal
+10.4-focal: Pulling from library/mariadb
+Digest: sha256:b6d48e55556ef9f9fe66d2cf7c8c69badca70de5fe25c4e018e4a15851dbdf66
+Status: Downloaded newer image for mariadb:10.4-focal
+ ---> 5b89851205aa
+Step 2/9 : LABEL maintainer "Igor Pellegrini <igor.pellegrini@live.com>"
+ ---> Running in 597cc7e4be11
+Removing intermediate container 597cc7e4be11
+ ---> 628cd947e20a
+Step 3/9 : USER root
+ ---> Running in 233dad00da7d
+Removing intermediate container 233dad00da7d
+ ---> 1e31079f54f9
+Step 4/9 : RUN apt-get -q update     && apt-get -q --yes install netcat      && apt-get clean
+ ---> Running in 52406ac2efb5
+Get:1 http://archive.ubuntu.com/ubuntu focal InRelease [265 kB]
+Get:2 http://archive.ubuntu.com/ubuntu focal-updates InRelease [114 kB]
+Get:3 http://archive.ubuntu.com/ubuntu focal-backports InRelease [101 kB]
+Get:4 http://security.ubuntu.com/ubuntu focal-security InRelease [109 kB]
+Get:5 http://archive.ubuntu.com/ubuntu focal/multiverse amd64 Packages [177 kB]
+Get:6 http://archive.ubuntu.com/ubuntu focal/universe amd64 Packages [11.3 MB]
+Get:7 http://archive.ubuntu.com/ubuntu focal/restricted amd64 Packages [33.4 kB]
+Get:8 http://archive.ubuntu.com/ubuntu focal/main amd64 Packages [1275 kB]
+Get:9 http://ftp.osuosl.org/pub/mariadb/repo/10.4/ubuntu focal InRelease [6264 B]
+Get:10 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 Packages [951 kB]
+Get:11 http://security.ubuntu.com/ubuntu focal-security/main amd64 Packages [549 kB]
+Get:12 http://archive.ubuntu.com/ubuntu focal-updates/multiverse amd64 Packages [22.0 kB]
+Get:13 http://archive.ubuntu.com/ubuntu focal-updates/restricted amd64 Packages [168 kB]
+Get:14 http://archive.ubuntu.com/ubuntu focal-updates/universe amd64 Packages [905 kB]
+Get:15 http://archive.ubuntu.com/ubuntu focal-backports/universe amd64 Packages [4301 B]
+Get:16 http://ftp.osuosl.org/pub/mariadb/repo/10.4/ubuntu focal/main amd64 Packages [16.3 kB]
+Get:17 http://security.ubuntu.com/ubuntu focal-security/universe amd64 Packages [648 kB]
+Get:18 http://security.ubuntu.com/ubuntu focal-security/restricted amd64 Packages [140 kB]
+Get:19 http://security.ubuntu.com/ubuntu focal-security/multiverse amd64 Packages [741 B]
+Fetched 16.8 MB in 1s (12.3 MB/s)
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following additional packages will be installed:
+  netcat-openbsd
+The following NEW packages will be installed:
+  netcat netcat-openbsd
+0 upgraded, 2 newly installed, 0 to remove and 6 not upgraded.
+Need to get 40.0 kB of archives.
+After this operation, 126 kB of additional disk space will be used.
+Get:1 http://archive.ubuntu.com/ubuntu focal/main amd64 netcat-openbsd amd64 1.206-1ubuntu1 [37.8 kB]
+Get:2 http://archive.ubuntu.com/ubuntu focal/universe amd64 netcat all 1.206-1ubuntu1 [2172 B]
+[91mdebconf: delaying package configuration, since apt-utils is not installed
+[0mFetched 40.0 kB in 0s (289 kB/s)
+Selecting previously unselected package netcat-openbsd.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 9715 files and directories currently installed.)
+Preparing to unpack .../netcat-openbsd_1.206-1ubuntu1_amd64.deb ...
+Unpacking netcat-openbsd (1.206-1ubuntu1) ...
+Selecting previously unselected package netcat.
+Preparing to unpack .../netcat_1.206-1ubuntu1_all.deb ...
+Unpacking netcat (1.206-1ubuntu1) ...
+Setting up netcat-openbsd (1.206-1ubuntu1) ...
+update-alternatives: using /bin/nc.openbsd to provide /bin/nc (nc) in auto mode
+update-alternatives: warning: skip creation of /usr/share/man/man1/nc.1.gz because associated file /usr/share/man/man1/nc_openbsd.1.gz (of link group nc) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/man1/netcat.1.gz because associated file /usr/share/man/man1/nc_openbsd.1.gz (of link group nc) doesn't exist
+Setting up netcat (1.206-1ubuntu1) ...
+Removing intermediate container 52406ac2efb5
+ ---> 25239bef695c
+Step 5/9 : RUN chown -R mysql:mysql /var/lib/mysql
+ ---> Running in 713afaa5df46
+Removing intermediate container 713afaa5df46
+ ---> 623d2b1730d7
+Step 6/9 : COPY --chown=mysql:mysql ./db/app-schema.sql /schemas/app-schema.sql
+ ---> 1cc9e7d31036
+Step 7/9 : COPY --chown=mysql:mysql ./docker/bash_functions.sh /scripts/bash_functions.sh
+ ---> 04cba6ffa31d
+Step 8/9 : COPY --chown=mysql:mysql ./docker/init-from-DB_NAMES.sh /docker-entrypoint-initdb.d/init-from-DB_NAMES.sh
+ ---> c8f987d3c698
+Step 9/9 : USER mysql
+ ---> Running in 8e085e54652f
+Removing intermediate container 8e085e54652f
+ ---> 3c80275be33f
+Successfully built 3c80275be33f
+Successfully tagged odiometro_database:latest
+Image for service database was built because it did not already exist. To rebuild this image you must use `docker-compose build` or `docker-compose up --build`.
+Building odiometro
+Step 1/18 : FROM node:14.12-alpine3.12
+14.12-alpine3.12: Pulling from library/node
+Digest: sha256:26bb780e251507f48c941995481aa69c10824c75cd5ce744853b0aaca2a7d6f8
+Status: Downloaded newer image for node:14.12-alpine3.12
+ ---> 2ed811d9fbd4
+Step 2/18 : LABEL maintainer "Igor Pellegrini <igor.pellegrini@live.com>"
+ ---> Running in 2663d4d90bb0
+Removing intermediate container 2663d4d90bb0
+ ---> 299a54b699c3
+Step 3/18 : ENV NODE_ENV=development
+ ---> Running in 0b964319a3aa
+Removing intermediate container 0b964319a3aa
+ ---> f597c466ccf2
+Step 4/18 : USER root
+ ---> Running in b38087858dcc
+Removing intermediate container b38087858dcc
+ ---> 04ffb39d6e03
+Step 5/18 : RUN apk update && apk add --no-cache --upgrade bash bzip2
+ ---> Running in 66044f9607e2
+fetch http://dl-cdn.alpinelinux.org/alpine/v3.12/main/x86_64/APKINDEX.tar.gz
+fetch http://dl-cdn.alpinelinux.org/alpine/v3.12/community/x86_64/APKINDEX.tar.gz
+v3.12.3-54-gc2a303485f [http://dl-cdn.alpinelinux.org/alpine/v3.12/main]
+v3.12.3-54-gc2a303485f [http://dl-cdn.alpinelinux.org/alpine/v3.12/community]
+OK: 12754 distinct packages available
+fetch http://dl-cdn.alpinelinux.org/alpine/v3.12/main/x86_64/APKINDEX.tar.gz
+fetch http://dl-cdn.alpinelinux.org/alpine/v3.12/community/x86_64/APKINDEX.tar.gz
+(1/9) Upgrading musl (1.1.24-r8 -> 1.1.24-r10)
+(2/9) Upgrading busybox (1.31.1-r16 -> 1.31.1-r19)
+Executing busybox-1.31.1-r19.post-upgrade
+(3/9) Upgrading ca-certificates-bundle (20191127-r2 -> 20191127-r4)
+(4/9) Upgrading ssl_client (1.31.1-r16 -> 1.31.1-r19)
+(5/9) Installing ncurses-terminfo-base (6.2_p20200523-r0)
+(6/9) Installing ncurses-libs (6.2_p20200523-r0)
+(7/9) Installing readline (8.0.4-r0)
+(8/9) Installing bash (5.0.17-r0)
+Executing bash-5.0.17-r0.post-install
+(9/9) Installing bzip2 (1.0.8-r1)
+Executing busybox-1.31.1-r19.trigger
+OK: 10 MiB in 21 packages
+Removing intermediate container 66044f9607e2
+ ---> 2a2fa8119c55
+Step 6/18 : WORKDIR /home/node/app
+ ---> Running in da6d40984e53
+Removing intermediate container da6d40984e53
+ ---> e408b550e68e
+Step 7/18 : RUN chown node:node -R /home/node/app
+ ---> Running in ac8594a7f863
+Removing intermediate container ac8594a7f863
+ ---> e06cd5f8f0ca
+Step 8/18 : COPY --chown=node:node ./docker/bash_functions.sh /scripts/bash_functions.sh
+ ---> 1c0a3eea1c1e
+Step 9/18 : COPY --chown=node:node ./docker/entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+ ---> ab0baa300758
+Step 10/18 : COPY --chown=node:node ./package.json /home/node/app/package.json
+ ---> 39b9312f884d
+Step 11/18 : COPY --chown=node:node ./public/package.json /home/node/app/public/package.json
+ ---> 9045ae3cc3b3
+Step 12/18 : USER node
+ ---> Running in f59db1795573
+Removing intermediate container f59db1795573
+ ---> 1c7122313ca6
+Step 13/18 : RUN npm install
+ ---> Running in 4f1a968a92ea
+Gracefully stopping... (press Ctrl+C again to force)

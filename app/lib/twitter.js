@@ -1,6 +1,20 @@
 /** TWITTER **/
+var twitterConfig = {};
+try {
+	twitterConfig = require(global.appRoot + '/config/twitter_' + global.botName + '.json');
+} catch (err) {
+	console.warn('twitter_' + global.botName + ' not present; try to load twitter settings from environment variables');
+	var { TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_TOKEN_SECRET } = process.env
+}
+// fallback chain for the twitter config
+//	- prefer environment variables, when running on docker (see docker-compose.yml)
+//  - precedence is given to local config file, if present under config/ folder
+twitterConfig.consumer_key = twitterConfig.consumer_key || TWITTER_CONSUMER_KEY;
+twitterConfig.consumer_secret = twitterConfig.consumer_secret || TWITTER_CONSUMER_SECRET;
+twitterConfig.access_token = twitterConfig.access_token || TWITTER_ACCESS_TOKEN;
+twitterConfig.access_token_secret = twitterConfig.access_token_secret || TWITTER_ACCESS_TOKEN_SECRET;
+
 // Twitter streaming
-var twitterConfig = require(global.appRoot + '/config/twitter_' + global.botName + '.json');
 var fs = require('fs');
 
 var Twit = require('twit');

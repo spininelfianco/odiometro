@@ -1,10 +1,25 @@
 /** DATABASE **/
-var dbConfig = require(global.appRoot + '/config/database_' + global.botName + '.json');
+var dbConfig = {};
+try {
+	dbConfig = require(global.appRoot + '/config/database_' + global.botName + '.json');
+} catch (err) {
+	console.warn('database_' + global.botName + ' not present; try to load db settings from environment variables');
+	var { APP_DATABASE_HOST, APP_DATABASE_NAME, APP_DATABASE_USER, APP_DATABASE_PASSWORD, APP_DATABASE_CONNECTION_CHARSET } = process.env
+}
+// fallback chain for the database config
+//	- prefer environment variables, when running on docker (see docker-compose.yml)
+//  - precedence is given to local config file, if present under config/ folder
+dbConfig.host = dbConfig.host || APP_DATABASE_HOST;
+dbConfig.database = dbConfig.database || APP_DATABASE_NAME;
+dbConfig.user = dbConfig.user || APP_DATABASE_USER;
+dbConfig.password = dbConfig.password || APP_DATABASE_PASSWORD;
+dbConfig.charset = dbConfig.charset || APP_DATABASE_CONNECTION_CHARSET;
+
 var mysql = require('mysql');
 var Tweet = require("../models/Tweet.js");
 
 // DB helper
-var databaseName = process.env.APP_DATABASE_NAME || dbConfig.database || 'odiometro';
+var databaseName = dbConfig.database || 'odiometro';
 var numTweetsToSave = 5;
 var numRetweetsToSave = 10;
 var numTweetsToStore = 50;
@@ -15,14 +30,11 @@ var tweetsToStore = [];
 var database = {
 	pool: mysql.createPool({
 		connectionLimit : 15,
-		// fallback chain for the database config
-		//	- prefer environment variables, when running on docker (see docker-compose.yml)
-		//  - precedence is given to local config file, if present under config/ folder
-		host: process.env.APP_DATABASE_HOST || dbConfig.host,
-		user: process.env.APP_DATABASE_USER || dbConfig.user,
-		password: process.env.APP_DATABASE_PASSWORD || dbConfig.password,
+		host: dbConfig.host,
+		user: dbConfig.user,
+		password: dbConfig.password,
 		database: databaseName,
-		charset: process.env.APP_DATABASE_CONNECTION_CHARSET || dbConfig.charset || 'utf8mb4'
+		charset: dbConfig.charset || 'utf8mb4'
 	})
 };
 
